@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'movies'
+    'movies',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -142,8 +143,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-
-#AUTH_USER_MODEL='users.CustomUser'
+AUTH_USER_MODEL='users.CustomUser'
 CORS_ALLOW_ALL_ORIGINS = True
 
 LANGUAGE_CODE = 'en-us'
