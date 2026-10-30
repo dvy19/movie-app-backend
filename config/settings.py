@@ -29,6 +29,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
+TMDB_ACCESS_TOKEN = os.getenv("TMDB_ACCESS_TOKEN")
+
+print("TMDB TOKEN LOADED:", bool(TMDB_ACCESS_TOKEN))
+
+
 ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",
     "localhost,127.0.0.1,plantbuddybackend.onrender.com"

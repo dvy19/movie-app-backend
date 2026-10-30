@@ -76,7 +76,7 @@ class RegisterView(APIView):
 
 class UserDetailsView(APIView):
 
-    permission_classes = [IsAuthenticated]
+    
 
     def get(self,request ,id=None):
 
