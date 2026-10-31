@@ -7,7 +7,7 @@ from rest_framework import status
 
 from rest_framework.permissions import AllowAny
 
-from .serializer import MoviePostSerializer
+from .serializers import MoviePostSerializer
 from .models import MoviePost
 
 from .services import get_movies
@@ -20,6 +20,8 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from .models import MoviePost, Notification
 from .serializers import MoviePostSerializer, NotificationSerializer
+
+
 
 class PopularMoviesView(APIView):
 
@@ -48,6 +50,63 @@ class PopularMoviesView(APIView):
                 {"error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+'''sample response
+
+[
+  {
+    "adult": false,
+    "backdrop_path": "/9FE5eD92WfVCiivM9Pq9GVSrlWk.jpg",
+    "genre_ids": [28, 53, 80],
+    "id": 155,
+    "title": "The Dark Knight",
+    "original_language": "en",
+    "original_title": "The Dark Knight",
+    "overview": "Batman raises the stakes in his war on crime. With the help of Lt. Jim Gordon and District Attorney Harvey Dent, Batman sets out to dismantle the remaining criminal organizations that plague the streets. The partnership proves to be effective, but they soon find themselves prey to a reign of chaos unleashed by a rising criminal mastermind known to the terrified citizens of Gotham as the Joker.",
+    "popularity": 4135.6789,
+    "poster_path": "/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    "release_date": "2008-07-16",
+    "softcore": false,
+    "video": false,
+    "vote_average": 8.539,
+    "vote_count": 37141
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/sl5NJ1vtyhP9Vr88bB4blULsJYp.jpg",
+    "genre_ids": [16, 12, 14],
+    "id": 791523,
+    "title": "Wildwood",
+    "original_language": "en",
+    "original_title": "Wildwood",
+    "overview": "Prue and her classmate Curtis are drawn into a magical forest filled with enchanted creatures, loyal allies, and formidable adversaries as they embark on a desperate quest to rescue Prue's abducted baby brother from a murder of crows led by a mysterious woman named Alexandra.",
+    "popularity": 2183.8371,
+    "poster_path": "/8g7q6o54WfKWRmUQ0Ye8OskevUY.jpg",
+    "release_date": "2026-10-19",
+    "softcore": false,
+    "video": false,
+    "vote_average": 8.618,
+    "vote_count": 114
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/qqHFLg90IUSoTmSMpKOOW5RyqN3.jpg",
+    "genre_ids": [878, 9648, 28],
+    "id": 1058424,
+    "title": "Hope",
+    "original_language": "ko",
+    "original_title": "호프",
+    "overview": "In the remote South Korean village of Hope Harbor, police chief Bum-seok and officer Sung-ae are called to investigate a mysterious creature wreaking havoc on the community. But all is not as it seems, and perceptions can be misleading. What begins as ignorance plants the seed of disaster, escalating through human conflict into a tragedy of cosmic proportions.",
+    "popularity": 459.5076,
+    "poster_path": "/6VY1ZKgpsc8CfGsQcCGiYEgHdH0.jpg",
+    "release_date": "2026-07-15",
+    "softcore": false,
+    "video": false,
+    "vote_average": 6.756,
+    "vote_count": 408
+  }
+]
+'''
 
 
 class SearchMoviesView(APIView):

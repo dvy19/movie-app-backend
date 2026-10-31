@@ -15,7 +15,8 @@ def get_movies(endpoint, params=None):
         f"{BASE_URL}/{endpoint}",
         headers=HEADERS,
         params=params,
-        timeout=15
+        timeout=15,
+        verify=False
     )
 
     response.raise_for_status()
