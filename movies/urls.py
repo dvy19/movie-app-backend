@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PopularMoviesView, SearchMoviesView , MovieView
+from .views import PopularMoviesView, SearchMoviesView , MovieView, NotificationListView , MarkNotificationAsReadView
 
 urlpatterns = [
     path('popular/', PopularMoviesView.as_view()),
@@ -13,5 +13,8 @@ urlpatterns = [
     
     # Handles GET (single post by ID)
     path('posts/<int:id>/', MovieView.as_view(), name='movie-detail'),
+
+    path('notifications/', NotificationListView.as_view(), name='notification-list'),
+    path('notifications/<int:pk>/read/', MarkNotificationAsReadView.as_view(), name='notification-mark-read'),
 
 ]

@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
 
@@ -41,6 +42,31 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{self.user} liked {self.post.title}"
+
+
+class Notification(models.Model):
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name="notifications"
+    )
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name="sent_notifications"
+    )
+    post = models.ForeignKey(
+        'MoviePost', 
+        on_delete=models.CASCADE, 
+        blank=True, 
+        null=True
+    )
+    message = models.CharField(max_length=255)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Notification for {self.recipient}: {self.message}"
 
 '''
 related_name="comments" lets you easily access all comments for a post using post.comments.all().
