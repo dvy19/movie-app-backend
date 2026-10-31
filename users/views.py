@@ -96,6 +96,7 @@ class UserDetailsView(APIView):
                 {"message":"no user found"},
                 status=status.HTTP_404_NOT_FOUND
             )
+    
     def get(self, request):
 
         try:
@@ -112,8 +113,6 @@ class UserDetailsView(APIView):
             )
 
     def post(self,request):
-
-
 
         serializer=UserDetailsSerializer(data=request.data)
 

@@ -11,7 +11,7 @@ urlpatterns = [
 
     path('get-user-details/<int:id>/' , UserDetailsView.as_view()),
 
-    path('/get-self-profile' , UserDetailsView.as_view())
+    path('get-self-profile' , UserDetailsView.as_view())
     
 
 

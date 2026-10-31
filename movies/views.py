@@ -7,12 +7,19 @@ from rest_framework import status
 
 from rest_framework.permissions import AllowAny
 
+from .serializer import MoviePostSerializer
+from .models import MoviePost
 
 from .services import get_movies
 
 import requests
 
-import requests
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from .models import MoviePost
+from .serializers import MoviePostSerializer
 
 class PopularMoviesView(APIView):
 
@@ -45,6 +52,7 @@ class PopularMoviesView(APIView):
 
 class SearchMoviesView(APIView):
 
+
     def get(self, request):
 
         query = request.query_params.get("query")
@@ -68,3 +76,37 @@ class SearchMoviesView(APIView):
                 {"error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+
+class MovieView(APIView):
+
+    def post(self, request):
+        serializer = MoviePostSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(
+                {
+                    "message": "Post created successfully",  
+                    "data": serializer.data
+                },
+                status=status.HTTP_201_CREATED 
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, id=None):  
+
+        if id is not None:
+
+            post = get_object_or_404(MoviePost, id=id)
+            serializer = MoviePostSerializer(post)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+
+            posts = MoviePost.objects.all().order_by('-id')
+            serializer = MoviePostSerializer(posts, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
