@@ -26,6 +26,8 @@ import requests
 from django.conf import settings
 from django.http import JsonResponse
 
+
+
 def get_movie_genres(request):
 
     url = "https://api.themoviedb.org/3/genre/movie/list"
@@ -46,6 +48,52 @@ def get_movie_genres(request):
     )
 
     return JsonResponse(response.json())
+def get_movies_by_genre(request, genre_id):
+
+    page = request.GET.get('page', 1)
+    search_query = request.GET.get('query', '').strip()
+
+    url = "https://api.themoviedb.org/3/discover/movie"
+
+    headers = {
+        "Authorization": f"Bearer {settings.TMDB_ACCESS_TOKEN}",
+        "accept": "application/json"
+    }
+
+    params = {
+        "with_genres": genre_id,
+        "sort_by": "popularity.desc",
+        "page": page,
+        "include_adult": False
+    }
+
+    # Apply movie search if query is provided
+    if search_query:
+        params["with_text_query"] = search_query
+
+    response = requests.get(
+        url,
+        headers=headers,
+        params=params,
+        timeout=10
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    movies = data.get("results", [])
+
+    return JsonResponse({
+        "genre_id": genre_id,
+        "query": search_query,
+        "page": data.get("page"),
+        "total_pages": data.get("total_pages"),
+        "total_results": data.get("total_results"),
+        "results": movies[:6]
+    })
+
+
 
 
 class PopularMoviesView(APIView):

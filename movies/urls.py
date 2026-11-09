@@ -17,6 +17,21 @@ urlpatterns = [
     
     path('notifications/<int:pk>/read/', MarkNotificationAsReadView.as_view(), name='notification-mark-read'),
 
-    path('/get-genre/' , views.get_movie_genres , name='movie-genre')
+    path('get-genre/' , views.get_movie_genres , name='movie-genre'),
+
+
+    # GET /api/genres/28/movies/?page=1
+
+    '''
+    There is one optimization worth considering: TMDB returns 20 movies per page, so our backend currently fetches 20 and sends only 6.
+    '''
+    path('genres/<int:genre_id>/movies/e' , views.get_movie_by_genre, name=''),
+
+    # GET /api/genres/27/search/?query=conjuring&page=1
+    path(
+        'genres/<int:genre_id>/movies/',
+        views.get_movies_by_genre,
+        name='genre-movies'
+    ),
 
 ]
