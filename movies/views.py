@@ -22,6 +22,31 @@ from .models import MoviePost, Notification
 from .serializers import MoviePostSerializer, NotificationSerializer
 
 
+import requests
+from django.conf import settings
+from django.http import JsonResponse
+
+def get_movie_genres(request):
+
+    url = "https://api.themoviedb.org/3/genre/movie/list"
+
+    headers = {
+        "Authorization": f"Bearer {settings.TMDB_ACCESS_TOKEN}",
+        "accept": "application/json"
+    }
+
+    params = {
+        "language": "en-US"
+    }
+
+    response = requests.get(
+        url,
+        headers=headers,
+        params=params
+    )
+
+    return JsonResponse(response.json())
+
 
 class PopularMoviesView(APIView):
 

@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import PopularMoviesView, SearchMoviesView , MovieView, NotificationListView , MarkNotificationAsReadView
+from .views import PopularMoviesView, SearchMoviesView , MovieView, NotificationListView , MarkNotificationAsReadView 
+from . import views
 
 urlpatterns = [
     path('popular/', PopularMoviesView.as_view()),
@@ -15,5 +16,7 @@ urlpatterns = [
     path('notifications/', NotificationListView.as_view(), name='notification-list'),
     
     path('notifications/<int:pk>/read/', MarkNotificationAsReadView.as_view(), name='notification-mark-read'),
+
+    path('/get-genre/' , views.get_movie_genres , name='movie-genre')
 
 ]
