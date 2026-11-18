@@ -36,7 +36,7 @@ print("TMDB TOKEN LOADED:", bool(TMDB_ACCESS_TOKEN))
 
 ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",
-    "localhost,127.0.0.1,plantbuddybackend.onrender.com"
+    "movie-app-backend-zvyr.onrender.com"
 ).split(",")
 
 
