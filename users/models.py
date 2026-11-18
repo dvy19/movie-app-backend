@@ -76,6 +76,7 @@ class UserDetails(models.Model):
 
     def __str__(self):
         return self.name
+
  
 class Survey(models.Model):
     STATUS_CHOICES = [
@@ -110,7 +111,7 @@ class Survey(models.Model):
     )
 
     created_by = models.ForeignKey(
-        'accounts.CustomUser',  # Adjust app name if needed
+        'users.CustomUser',  # Adjust app name if needed
         on_delete=models.CASCADE,
         related_name='created_surveys'
     )
