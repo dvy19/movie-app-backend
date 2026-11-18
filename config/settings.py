@@ -53,8 +53,8 @@ INSTALLED_APPS = [
     'movies',
     'users',
     'community',
-    'chats',
-    'channels'
+    'chats'
+    #'channels'
 ]
 
 MIDDLEWARE = [
