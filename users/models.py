@@ -76,3 +76,73 @@ class UserDetails(models.Model):
 
     def __str__(self):
         return self.name
+ 
+class Survey(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('closed', 'Closed'),
+    ]
+
+    title = models.CharField(max_length=100, default="Movie Survey") # Good to have a survey title
+    movie = models.CharField(max_length=100)  # Increased length for longer movie titles
+    
+    # Rating out of 5 or 10, adding validators is recommended
+    rating = models.IntegerField(
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(10)]
+    )
+    
+    movie_image = models.ImageField(
+        upload_to='survey_movies/',
+        blank=True,
+        null=True
+    )
+    description = models.TextField(max_length=500) # TextField or larger char length for descriptions
+
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='draft'
+    )
+
+    created_by = models.ForeignKey(
+        'accounts.CustomUser',  # Adjust app name if needed
+        on_delete=models.CASCADE,
+        related_name='created_surveys'
+    )
+
+    created_at = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.movie} Survey ({self.status})"
+
+    class Meta:
+        ordering = ['-created_at']
+
+
+class SurveyQuestion(models.Model):
+    survey = models.ForeignKey(
+        Survey,
+        on_delete=models.CASCADE,
+        related_name='survey_questions'
+    )
+
+    question_text = models.CharField(max_length=255) # Increased length for real questions
+
+    choice_1 = models.CharField(max_length=255)
+    choice_2 = models.CharField(max_length=255)
+    choice_3 = models.CharField(max_length=255)
+    choice_4 = models.CharField(max_length=255)
+
+    order = models.PositiveIntegerField(default=1) # Fixed PositiveBigIntegerField to PositiveIntegerField
+
+    def __str__(self):
+        return f"Q{self.order}: {self.question_text}"
+
+    class Meta:
+        ordering = ['order']
+        unique_together = ('survey', 'order') # Ensures question orders don't duplicate per survey

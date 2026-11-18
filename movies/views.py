@@ -48,6 +48,7 @@ def get_movie_genres(request):
     )
 
     return JsonResponse(response.json())
+
 def get_movies_by_genre(request, genre_id):
 
     page = request.GET.get('page', 1)

@@ -22,10 +22,8 @@ urlpatterns = [
 
     # GET /api/genres/28/movies/?page=1
 
-    '''
-    There is one optimization worth considering: TMDB returns 20 movies per page, so our backend currently fetches 20 and sends only 6.
-    '''
-    path('genres/<int:genre_id>/movies/e' , views.get_movie_by_genre, name=''),
+    
+    path('genres/<int:genre_id>/movies/e' , views.get_movies_by_genre, name=''),
 
     # GET /api/genres/27/search/?query=conjuring&page=1
     path(
