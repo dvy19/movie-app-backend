@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import  LoginView, RegisterView , UserDetailsView
+from .views import  LoginView, RegisterView , UserDetailsView, health_check
 
 urlpatterns = [
 
@@ -11,7 +11,10 @@ urlpatterns = [
 
     path('get-user-details/<int:id>/' , UserDetailsView.as_view()),
 
-    path('get-self-profile' , UserDetailsView.as_view())
+    path('get-self-profile' , UserDetailsView.as_view()),
+
+    
+    path("health-check/" , health_check)
     
 
 

@@ -10,6 +10,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import UserDetails
 
+from django.http import JsonResponse
+
+def health_check(request):
+    return JsonResponse({
+        "status": "ok"
+    })
+
 
 
 # Create your views here.
