@@ -239,14 +239,17 @@ class MovieView(APIView):
         else:
             category = request.query_params.get('category')
             
-            posts = MoviePost.objects.all()
+            posts = MoviePost.objects.select_related("user").all()
             
             if category:
                 posts = posts.filter(category__iexact=category)
             
             posts = posts.order_by('-id')
             serializer = MoviePostSerializer(posts, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(
+                {"data": serializer.data}, 
+                status=status.HTTP_200_OK
+                )
 
 
 class NotificationListView(APIView):
