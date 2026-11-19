@@ -251,6 +251,20 @@ class MovieView(APIView):
                 status=status.HTTP_200_OK
                 )
 
+class MyPostsView(APIView):
+    #permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        category = request.query_params.get("category")
+
+        posts = request.user.post.select_related("user").all()
+
+        if category:
+            posts = posts.filter(category__iexact=category)
+
+        posts = posts.order_by("-id")
+        serializer = MoviePostSerializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class NotificationListView(APIView):
 

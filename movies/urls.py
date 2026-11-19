@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PopularMoviesView, SearchMoviesView , MovieView, NotificationListView , MarkNotificationAsReadView 
+from .views import PopularMoviesView, SearchMoviesView , MovieView, NotificationListView , MarkNotificationAsReadView  ,MyPostsView
 from . import views
 
 urlpatterns = [
@@ -9,6 +9,8 @@ urlpatterns = [
 
     # Handles GET (all posts) and POST (create post)
     path('posts/', MovieView.as_view(), name='movie-list-create'),
+
+    path("posts/me/", MyPostsView.as_view(), name="my-posts"),
     
     # Handles GET (single post by ID)
     path('posts/<int:id>/', MovieView.as_view(), name='movie-detail'),
@@ -21,6 +23,7 @@ urlpatterns = [
 
 
     # GET /api/genres/28/movies/?page=1
+
 
     
     path('genres/<int:genre_id>/movies/e' , views.get_movies_by_genre, name=''),
