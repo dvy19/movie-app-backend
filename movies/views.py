@@ -230,6 +230,8 @@ class MovieView(APIView):
 
     def get(self, request, id=None):  
 
+        permission_classes = [AllowAny]
+
         if id is not None:
 
             post = get_object_or_404(MoviePost, id=id)
