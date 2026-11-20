@@ -111,7 +111,7 @@ class Survey(models.Model):
     )
 
     created_by = models.ForeignKey(
-        'users.CustomUser',  # Adjust app name if needed
+        'users.CustomUser',  
         on_delete=models.CASCADE,
         related_name='created_surveys'
     )
@@ -132,18 +132,17 @@ class SurveyQuestion(models.Model):
         related_name='survey_questions'
     )
 
-    question_text = models.CharField(max_length=255) # Increased length for real questions
-
+    question_text = models.CharField(max_length=255) 
     choice_1 = models.CharField(max_length=255)
     choice_2 = models.CharField(max_length=255)
     choice_3 = models.CharField(max_length=255)
     choice_4 = models.CharField(max_length=255)
 
-    order = models.PositiveIntegerField(default=1) # Fixed PositiveBigIntegerField to PositiveIntegerField
+    order = models.PositiveIntegerField(default=1) 
 
     def __str__(self):
         return f"Q{self.order}: {self.question_text}"
 
     class Meta:
         ordering = ['order']
-        unique_together = ('survey', 'order') # Ensures question orders don't duplicate per survey
+        unique_together = ('survey', 'order') 

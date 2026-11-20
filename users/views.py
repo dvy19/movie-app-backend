@@ -5,11 +5,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
-from .serializers import LoginSerializer, RegisterSerializer , UserDetailsSerializer 
+from .serializers import LoginSerializer, RegisterSerializer , UserDetailsSerializer, SurveySerializer 
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+
+
 
 
 from .models import UserDetails
@@ -150,5 +152,24 @@ def getMyProfileDetails(request):
             status=status.HTTP_404_NOT_FOUND
         )
 
+
+class SurveyCreateAPIView(APIView):
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        serializer = SurveySerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            user = request.user 
+
+            survey = serializer.save(created_by=user)
+
+            return Response(
+                {"data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 

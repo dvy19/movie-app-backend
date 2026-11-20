@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import  LoginView, RegisterView , UserDetailsView, health_check, getMyProfileDetails
+from .views import  LoginView, RegisterView , UserDetailsView, health_check, getMyProfileDetails, SurveyCreateAPIView
 
 urlpatterns = [
 
@@ -14,7 +14,9 @@ urlpatterns = [
     path('get-self-profile' , getMyProfileDetails),
 
     
-    path("health-check/" , health_check)
+    path("health-check/" , health_check),
+
+    path('surveys/create/', SurveyCreateAPIView.as_view(), name='survey-create'),
     
 
 
