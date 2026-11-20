@@ -8,6 +8,10 @@ from rest_framework.permissions import AllowAny
 from .serializers import LoginSerializer, RegisterSerializer , UserDetailsSerializer 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+
 from .models import UserDetails
 
 from django.http import JsonResponse
@@ -83,7 +87,6 @@ class RegisterView(APIView):
 
 class UserDetailsView(APIView):
 
-    
 
     def get(self,request ,id=None):
 
@@ -104,20 +107,7 @@ class UserDetailsView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
     
-    def get(self, request):
 
-        try:
-            user_details = UserDetails.objects.get(user=request.user)
-
-            serializer = UserDetailsSerializer(user_details)
-
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        except UserDetails.DoesNotExist:
-            return Response(
-                {"message": "Profile not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
 
     def post(self,request):
 
@@ -141,6 +131,23 @@ class UserDetailsView(APIView):
                 "errors": serializer.errors
             },
             status=status.HTTP_400_BAD_REQUEST
+        )
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getMyProfileDetails(request):
+
+    try:
+        user_details = UserDetails.objects.get(user=request.user)
+
+        serializer = UserDetailsSerializer(user_details)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except UserDetails.DoesNotExist:
+        return Response(
+            {"message": "Profile not found"},
+            status=status.HTTP_404_NOT_FOUND
         )
 
     
