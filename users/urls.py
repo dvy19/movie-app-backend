@@ -17,6 +17,7 @@ urlpatterns = [
     path("health-check/" , health_check),
 
     path('surveys/create/', SurveyCreateAPIView.as_view(), name='survey-create'),
+    path("surveys/<int:pk>/", SurveyCreateAPIView.as_view(), name="survey-detail"),
     
 
 
