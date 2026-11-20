@@ -11,7 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
-
+import traceback
 
 
 from .models import UserDetails
@@ -155,21 +155,44 @@ def getMyProfileDetails(request):
 
 class SurveyCreateAPIView(APIView):
 
-    permission_classes = [AllowAny]
 
     def post(self, request):
+        print("[DEBUG] Incoming request.data:", request.data)
+        print("[DEBUG] Incoming request.user:", request.user, "| authenticated:", request.user.is_authenticated)
 
-        serializer = SurveySerializer(data=request.data, context={'request': request})
+        try:
+            serializer = SurveySerializer(data=request.data, context={"request": request})
+            is_valid = serializer.is_valid()
+            print("[DEBUG] serializer.is_valid():", is_valid)
 
-        if serializer.is_valid():
-            user = request.user 
+            if not is_valid:
+                print("[DEBUG] serializer.errors:", serializer.errors)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            print("[DEBUG] serializer.validated_data:", serializer.validated_data)
+
+            user = request.user if request.user.is_authenticated else None
+            print("[DEBUG] Resolved user for created_by:", user)
 
             survey = serializer.save(created_by=user)
+            print("[DEBUG] Created survey ID:", survey.id)
 
+            response_data = {"data": serializer.data}
+            print("[DEBUG] Returning 201 response")
+            return Response(response_data, status=status.HTTP_201_CREATED)
+
+        except Exception as exc:
+            print("[DEBUG ERROR] Exception type:", type(exc).__name__)
+            print("[DEBUG ERROR] Exception message:", str(exc))
+            print("[DEBUG TRACEBACK]:\n", traceback.format_exc())
+
+            # Optional: surface the error in dev while debugging (remove in production)
             return Response(
-                {"data": serializer.data},
-                status=status.HTTP_201_CREATED,
+                {
+                    "error": type(exc).__name__,
+                    "detail": str(exc),
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
