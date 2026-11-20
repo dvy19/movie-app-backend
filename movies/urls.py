@@ -1,11 +1,13 @@
 from django.urls import path
-from .views import PopularMoviesView, SearchMoviesView , MovieView, NotificationListView , MarkNotificationAsReadView  ,MyPostsView
+from .views import PopularMoviesView, SearchMoviesView , MovieView, NotificationListView , MarkNotificationAsReadView  ,MyPostsView, MovieDetailView
 from . import views
 
 urlpatterns = [
     path('popular/', PopularMoviesView.as_view()),
     
     path('search/', SearchMoviesView.as_view()),
+
+    path("movies/<int:movie_id>/", MovieDetailView.as_view()),
 
     # Handles GET (all posts) and POST (create post)
     path('posts/', MovieView.as_view(), name='movie-list-create'),
