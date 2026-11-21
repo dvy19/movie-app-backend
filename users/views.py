@@ -287,7 +287,7 @@ class SubmitSurveyResponsesView(APIView):
                    
             print("[DEBUG 6] Is Serializer Valid:", is_valid)
             serializer.is_valid(raise_exception=True)
-            serializer.save(user=request.user)  # Calls create() once for each of the 4 items
+            serializer.save()  # Calls create() once for each of the 4 items
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         except Exception as e:
