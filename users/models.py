@@ -149,12 +149,7 @@ class SurveyQuestion(models.Model):
 
 
 class UserSurveyResponse(models.Model):
-    CHOICE_KEYS = [
-        ('choice_1', 'Choice 1'),
-        ('choice_2', 'Choice 2'),
-        ('choice_3', 'Choice 3'),
-        ('choice_4', 'Choice 4'),
-    ]
+    
 
     user = models.ForeignKey(
         'users.CustomUser',
@@ -167,8 +162,7 @@ class UserSurveyResponse(models.Model):
         related_name='responses'
     )
     selected_choice = models.CharField(
-        max_length=20,
-        choices=CHOICE_KEYS,
+        max_length=100,
         blank=True,
         null=True
     )
