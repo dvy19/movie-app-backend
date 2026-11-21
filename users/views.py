@@ -267,15 +267,44 @@ class SurveyCreateAPIView(APIView):
 
 
 class SubmitSurveyResponsesView(APIView):
+
     def post(self, request):
-        serializer = UserSurveyResponseSerializer(
-            data=request.data,
-            many=True,
-            context={"request": request},
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user)  # Calls create() once for each of the 4 items
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        try:
+            print("[DEBUG 1] Request User:", request.user)
+            print("[DEBUG 2] Is Authenticated:", request.user.is_authenticated)
+                   
+            print("[DEBUG 4] Request Data:", request.data)
+                   
+            serializer = UserSurveyResponseSerializer(
+                       data=request.data,
+                       many=True,
+                       context={"request": request},
+                   )
+           
+                    # 4. Validate serializer
+            is_valid = serializer.is_valid()
+                   
+            print("[DEBUG 6] Is Serializer Valid:", is_valid)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(user=request.user)  # Calls create() once for each of the 4 items
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+                print("\n========== PROFILE POST EXCEPTION ==========")
+                print("[ERROR] Exception Type:", type(e).__name__)
+                print("[ERROR] Exception Message:", str(e))
+                traceback.print_exc()
+                print("========== END EXCEPTION ==========\n")
+    
+                return Response(
+                    {
+                        "message": "Internal Server Error",
+                        "error": str(e),
+                        "type": type(e).__name__
+                    },
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
 
 ''' sample post json
 
