@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 import traceback
 from .models  import Survey
-from .serializers import LoginSerializer, RegisterSerializer , UserDetailsSerializer, SurveySerializer 
+from .serializers import LoginSerializer, RegisterSerializer , UserDetailsSerializer, SurveySerializer , UserSurveyResponseSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from rest_framework.decorators import api_view, permission_classes
@@ -256,6 +256,7 @@ class SurveyCreateAPIView(APIView):
             serializer = SurveySerializer(survey, context={"request": request})
             return Response({"data": serializer.data}, status=status.HTTP_200_OK)
 
+
         # List surveys: GET /api/surveys/ (optional ?status=published|draft|closed)
         status_param = request.query_params.get("status")
         if status_param:
@@ -264,3 +265,26 @@ class SurveyCreateAPIView(APIView):
         serializer = SurveySerializer(queryset, many=True, context={"request": request})
         return Response({"data": serializer.data}, status=status.HTTP_200_OK)
 
+
+class SubmitSurveyResponsesView(APIView):
+    def post(self, request):
+        serializer = UserSurveyResponseSerializer(
+            data=request.data,
+            many=True,
+            context={"request": request},
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)  # Calls create() once for each of the 4 items
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+''' sample post json
+
+[
+  { "question": 1, "selected_choice": "choice_1", "has_attended": true },
+  { "question": 2, "selected_choice": "choice_3", "has_attended": true },
+  { "question": 3, "selected_choice": "choice_2", "has_attended": true },
+  { "question": 4, "selected_choice": null, "has_attended": false }
+]
+
+
+'''

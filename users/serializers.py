@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import CustomUser , UserDetails,  Survey, SurveyQuestion
+from .models import CustomUser , UserDetails,  Survey, SurveyQuestion, UserSurveyResponse
 from django.db import transaction
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -126,3 +126,25 @@ class SurveySerializer(serializers.ModelSerializer):
         ])
 
         return survey
+
+class UserSurveyResponseSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(source="user.id", read_only=True)
+
+    class Meta:
+        model = UserSurveyResponse
+        fields = [
+            "id",
+            "user_id",
+            "question",
+            "selected_choice",
+            "has_attended",
+            "created_at",
+            "updated_at",
+            "user"
+        ]
+        read_only_fields = ["id", "user_id", "created_at", "updated_at" , "user"]
+
+    def create(self, validated_data):
+        # Grab the logged-in user instead of expecting it in the JSON body
+        user = self.context["request"].user
+        return UserSurveyResponse.objects.create(user=user, **validated_data)

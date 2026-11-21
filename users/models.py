@@ -146,4 +146,53 @@ class SurveyQuestion(models.Model):
     class Meta:
         ordering = ['order']
         unique_together = ('survey', 'order') 
-        
+
+
+class UserSurveyResponse(models.Model):
+    CHOICE_KEYS = [
+        ('choice_1', 'Choice 1'),
+        ('choice_2', 'Choice 2'),
+        ('choice_3', 'Choice 3'),
+        ('choice_4', 'Choice 4'),
+    ]
+
+    user = models.ForeignKey(
+        'users.CustomUser',
+        on_delete=models.CASCADE,
+        related_name='survey_responses'
+    )
+    question = models.ForeignKey(
+        SurveyQuestion,
+        on_delete=models.CASCADE,
+        related_name='responses'
+    )
+    selected_choice = models.CharField(
+        max_length=20,
+        choices=CHOICE_KEYS,
+        blank=True,
+        null=True
+    )
+    has_attended = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'question'],
+                name='unique_user_question_response'
+            )
+        ]
+
+    def __str__(self):
+        status = "Attended" if self.has_attended else "Not Attended"
+        return f"{self.user} - {self.question} ({status})"
+
+    @property
+    def selected_choice_text(self):
+        """Returns the actual choice text from SurveyQuestion if selected."""
+        if not self.selected_choice:
+            return None
+        return getattr(self.question, self.selected_choice, None)

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import  LoginView, RegisterView , UserDetailsView, health_check, getMyProfileDetails, SurveyCreateAPIView
+from .views import  LoginView, RegisterView , UserDetailsView, health_check, getMyProfileDetails, SurveyCreateAPIView, SubmitSurveyResponsesView
 
 urlpatterns = [
 
@@ -18,6 +18,11 @@ urlpatterns = [
 
     path('surveys/create/', SurveyCreateAPIView.as_view(), name='survey-create'),
     path("surveys/<int:pk>/", SurveyCreateAPIView.as_view(), name="survey-detail"),
+
+    path("surveys/submit-survey-response/", SubmitSurveyResponsesView.as_view(), name="survey-response"),
+
+
+
     
 
 
