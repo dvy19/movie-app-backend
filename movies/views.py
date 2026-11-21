@@ -321,3 +321,42 @@ but will be case sensitive
 
 __ => double underscore in django is used to separate the lookup filter from the model name
 '''
+
+class FilteredMoviesView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        params = {
+            "language": request.query_params.get("language", "en-US"),
+            "page": request.query_params.get("page", 1),
+            "sort_by": request.query_params.get("sort_by", "popularity.desc"),
+            "include_adult": request.query_params.get("include_adult", "false").lower(),
+        }
+
+        # Filter by original audio language (e.g., "hi", "en", or "hi|en")
+        original_language = request.query_params.get("with_original_language")
+        if original_language:
+            params["with_original_language"] = original_language
+
+        # Filter by exact release year (e.g., "2024")
+        release_year = request.query_params.get("primary_release_year")
+        if release_year:
+            params["primary_release_year"] = release_year
+
+        # Filter by release date range (YYYY-MM-DD)
+        release_date_gte = request.query_params.get("primary_release_date.gte")
+        if release_date_gte:
+            params["primary_release_date.gte"] = release_date_gte
+
+        release_date_lte = request.query_params.get("primary_release_date.lte")
+        if release_date_lte:
+            params["primary_release_date.lte"] = release_date_lte
+
+        try:
+            data = get_movies("discover/movie", params)
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as exc:
+            return Response(
+                {"detail": f"Failed to fetch filtered movies: {str(exc)}"},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
