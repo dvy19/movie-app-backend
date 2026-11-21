@@ -54,8 +54,8 @@ class UserDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=UserDetails
-        fields=['city' , 'gender' , 'user' , 'profile' , 'name']
-        read_only_fields=['user'  , 'email']
+        fields=['city' , 'gender' , 'user' , 'profile' , 'name' , 'mail']
+        read_only_fields=['user'  , 'mail']
 
 
 class SurveyQuestionSerializer(serializers.ModelSerializer):
