@@ -55,13 +55,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class UserDetails(models.Model):
 
-    MALE="male"
-    FEMALE="female"
-
-    GENDER_CHOICES=[
-        (MALE,"male"),
-        (FEMALE,"female"),
-    ]
+   
 
     # with ForeignKey a user can have multiple records, hence not used
     user=models.OneToOneField(CustomUser , on_delete=models.CASCADE , related_name="details")
@@ -70,9 +64,9 @@ class UserDetails(models.Model):
 
     profile=models.ImageField( upload_to='profiles/' , blank=True , null=True)
 
-    gender=models.CharField(max_length=10 , choices=GENDER_CHOICES)
+    gender=models.CharField(max_length=10 )
 
-    city=models.CharField(max_length=30)
+    city=models.CharField(max_length=80)
 
     def __str__(self):
         return self.name
