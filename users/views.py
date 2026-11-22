@@ -106,7 +106,7 @@ class UserDetailsView(APIView):
                 )
 
         # List all user details
-        queryset = UserDetails.objects.select_related("user").all()
+        queryset = UserDetails.objects.all()
         serializer = UserDetailsSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
