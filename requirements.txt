@@ -8,6 +8,7 @@ django-cors-headers==4.9.0
 cloudinary==1.44.2
 gunicorn==25.1.0
 whitenoise==6.12.0
+groq
 django-cloudinary-storage==0.3.0
 psycopg2-binary==2.9.11
 dj-database-url==3.1.2
