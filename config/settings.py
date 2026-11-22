@@ -35,10 +35,26 @@ TMDB_ACCESS_TOKEN = os.getenv("TMDB_ACCESS_TOKEN")
 
 print("TMDB TOKEN LOADED:", bool(TMDB_ACCESS_TOKEN))
 
+CELERY_BROKER_URL = os.environ.get(
+    "REDIS_URL",
+    "redis://localhost:6379/0"
+)
+
+CELERY_RESULT_BACKEND = os.environ.get(
+    "REDIS_URL",
+    "redis://localhost:6379/0"
+)
+
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+
+CELERY_TIMEZONE = "Asia/Kolkata"
+CELERY_ENABLE_UTC = True
 
 ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",
-    "movie-app-backend-zvyr.onrender.com"
+    "127.0.0.1,localhost,movie-app-backend-zvyr.onrender.com"
 ).split(",")
 
 

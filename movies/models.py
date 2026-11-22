@@ -13,7 +13,8 @@ class MoviePost(models.Model):
 
     content=models.CharField(max_length=200)
 
-    category=models.CharField(max_length=30)
+    category=models.CharField(max_length=40 ,  blank=True,
+    default="")
 
     def __str__(self):
         return {self.title}

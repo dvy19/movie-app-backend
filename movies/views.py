@@ -10,7 +10,6 @@ from rest_framework.permissions import AllowAny
 from .serializers import MoviePostSerializer
 from .models import MoviePost
 
-from .services import get_movies
 
 import requests
 
@@ -26,6 +25,8 @@ import requests
 from django.conf import settings
 from django.http import JsonResponse
 
+
+from movies.tasks import categorize_post_task
 
 
 def get_movie_genres(request):
@@ -243,7 +244,12 @@ class MovieView(APIView):
         serializer = MoviePostSerializer(data=request.data)
         
         if serializer.is_valid():
-            serializer.save(user=request.user)
+
+            post = serializer.save(user=request.user)
+
+            # Trigger background categorization
+            categorize_post_task.delay(post.id)
+
             return Response(
                 {
                     "message": "Post created successfully",  

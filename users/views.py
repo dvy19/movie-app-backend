@@ -92,55 +92,41 @@ class RegisterView(APIView):
 class UserDetailsView(APIView):
 
 
-    def get(self,request ,id=None):
+    def get(self, request, id=None):
+        
+        if id is not None:
+            try:
+                user_details = UserDetails.objects.select_related("user").get(user_id=id)
+                serializer = UserDetailsSerializer(user_details)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except UserDetails.DoesNotExist:
+                return Response(
+                    {"message": "no user found"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
-        try:
-
-            # user_id is Django's automatically generated field for your ForeignKey or OneToOneField.
-            user_details=UserDetails.objects.get(user_id=id)
-
-            serializer=UserDetailsSerializer(user_details)
-
-            return Response(
-                serializer.data, 
-                status=status.HTTP_200_OK
-            )
-        except UserDetails.DoesNotExist:
-            return Response(
-                {"message":"no user found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
+        # List all user details
+        queryset = UserDetails.objects.select_related("user").all()
+        serializer = UserDetailsSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
-
-
-   
-
     def post(self, request):
 
         try:
-            print("\n========== PROFILE POST DEBUG START ==========")
 
-            # 1. Check request user
-            print("[DEBUG 1] Request User:", request.user)
-            print("[DEBUG 2] Is Authenticated:", request.user.is_authenticated)
-            print("[DEBUG 3] User ID:", request.user.id)
-
-            # 2. Check incoming data
-            print("[DEBUG 4] Request Data:", request.data)
+           
 
             # 3. Initialize serializer
             serializer = UserDetailsSerializer(data=request.data)
 
-            print("[DEBUG 5] Serializer Initialized:", serializer)
 
             # 4. Validate serializer
             is_valid = serializer.is_valid()
 
-            print("[DEBUG 6] Is Serializer Valid:", is_valid)
+            
 
             if not is_valid:
-                print("[DEBUG 7] Serializer Errors:", serializer.errors)
-                print("[DEBUG 8] Validation Data:", serializer.validated_data)
+                
 
                 return Response(
                     {
@@ -150,24 +136,16 @@ class UserDetailsView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            # 5. Check validated data
-            print("[DEBUG 9] Validated Data:", serializer.validated_data)
-
-            # 6. Save serializer
-            print("[DEBUG 10] Saving profile...")
+           
 
             instance = serializer.save(user=request.user)
 
-            print("[DEBUG 11] Profile Saved Successfully!")
-            print("[DEBUG 12] Saved Instance:", instance)
-            print("[DEBUG 13] Saved Instance ID:", instance.id)
+            
 
             # 7. Check serialized response data
             response_data = serializer.data
 
-            print("[DEBUG 14] Response Data:", response_data)
-
-            print("========== PROFILE POST DEBUG END ==========\n")
+           
 
             return Response(
                 {
