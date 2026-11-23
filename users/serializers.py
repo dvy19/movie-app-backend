@@ -54,7 +54,7 @@ class UserDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=UserDetails
-        fields=['city' , 'gender' , 'user' , 'profile' , 'name' , 'mail']
+        fields=['city' , 'gender' , 'user' , 'profile' , 'name' , 'mail' , 'country']
         read_only_fields=['user'  , 'mail']
 
 

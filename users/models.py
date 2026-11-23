@@ -68,6 +68,8 @@ class UserDetails(models.Model):
 
     city=models.CharField(max_length=80)
 
+    country=models.CharField(max_length=100 , blank=True)
+
     def __str__(self):
         return self.name
 
