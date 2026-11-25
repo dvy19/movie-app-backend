@@ -10,7 +10,9 @@ from rest_framework.permissions import AllowAny
 from .serializers import MoviePostSerializer
 from .models import MoviePost
 
-from .services.tmdb_service import get_movies
+
+from .tmdb_service import get_movies
+
 import requests
 
 from rest_framework import status
