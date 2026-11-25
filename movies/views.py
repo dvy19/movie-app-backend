@@ -10,7 +10,7 @@ from rest_framework.permissions import AllowAny
 from .serializers import MoviePostSerializer
 from .models import MoviePost
 
-
+from .services.tmdb_service import get_movies
 import requests
 
 from rest_framework import status
@@ -24,6 +24,8 @@ from .serializers import MoviePostSerializer, NotificationSerializer
 import requests
 from django.conf import settings
 from django.http import JsonResponse
+
+
 
 
 from movies.tasks import categorize_post_task
