@@ -327,7 +327,6 @@ but will be case sensitive
 
 __ => double underscore in django is used to separate the lookup filter from the model name
 '''
-
 class FilteredMoviesView(APIView):
     permission_classes = [AllowAny]
 
@@ -338,6 +337,11 @@ class FilteredMoviesView(APIView):
             "sort_by": request.query_params.get("sort_by", "popularity.desc"),
             "include_adult": request.query_params.get("include_adult", "false").lower(),
         }
+
+        # Filter by country of origin (ISO 3166-1 alpha-2 code, e.g., "IN", "US", or "IN|US")
+        origin_country = request.query_params.get("with_origin_country")
+        if origin_country:
+            params["with_origin_country"] = origin_country.upper()
 
         # Filter by original audio language (e.g., "hi", "en", or "hi|en")
         original_language = request.query_params.get("with_original_language")
