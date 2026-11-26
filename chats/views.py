@@ -67,9 +67,26 @@ class CreateChatRoomView(APIView):
 
         rooms = ChatRoom.objects.filter(
             Q(user1=request.user) | Q(user2=request.user)
+        ).select_related(
+            "user1", "user2"
         ).order_by("-updated_at")
 
-        serializer = ChatRoomSerializer(rooms, many=True)
+        data = []
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        for room in rooms:
+
+            other_user = (
+                room.user2 if room.user1 == request.user
+                else room.user1
+            )
+
+            data.append({
+                "room_id": str(room.id),
+                "recipient_id": other_user.id,
+                "recipient_username": other_user.username,
+                "created_at": room.created_at,
+                "updated_at": room.updated_at
+            })
+
+        return Response(data, status=status.HTTP_200_OK)
 
