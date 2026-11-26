@@ -11,6 +11,9 @@ from django.contrib.auth import get_user_model
 from .models import ChatRoom
 from .serializers import ChatRoomSerializer
 
+from django.db.models import Q
+
+
 User = get_user_model()
 
 
@@ -58,4 +61,15 @@ class CreateChatRoomView(APIView):
             },
             status=status.HTTP_200_OK
         )
+
+
+    def get(self, request):
+
+        rooms = ChatRoom.objects.filter(
+            Q(user1=request.user) | Q(user2=request.user)
+        ).order_by("-updated_at")
+
+        serializer = ChatRoomSerializer(rooms, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
