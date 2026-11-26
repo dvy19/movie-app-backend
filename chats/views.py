@@ -98,7 +98,7 @@ class CreateChatRoomView(APIView):
                 data.append({
                     "room_id": str(room.id),
                     "recipient_id": other_user.id,
-                    "recipient_username": other_user.name,
+                    "recipient_username": other_user.email,
                     "created_at": room.created_at,
                     "updated_at": room.updated_at
                 })
