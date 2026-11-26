@@ -97,3 +97,9 @@ handle likes and comments count dynamically
 total_likes = post.likes.count()
 total_comments = post.comments.count()
 '''
+
+
+
+
+
+

@@ -19,7 +19,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-from .models import MoviePost, Notification
+from .models import MoviePost, Notification , Like
 from .serializers import MoviePostSerializer, NotificationSerializer
 
 
@@ -374,3 +374,28 @@ class FilteredMoviesView(APIView):
                 {"detail": f"Failed to fetch filtered movies: {str(exc)}"},
                 status=status.HTTP_502_BAD_GATEWAY,
             )
+
+
+class LikePostView(APIView):
+
+    def post(self, request, post_id):
+
+        post = get_object_or_404(MoviePost, id=post_id)
+
+        like, created = Like.objects.get_or_create(
+            post=post,
+            user=request.user
+        )
+
+        if created:
+            return Response({
+                "message": "Post liked",
+                "is_liked": True,
+                "likes_count": post.likes.count()
+            })
+
+        return Response({
+            "message": "Already liked",
+            "is_liked": True,
+            "likes_count": post.likes.count()
+        })

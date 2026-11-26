@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PopularMoviesView, SearchMoviesView , MovieView, NotificationListView , MarkNotificationAsReadView  ,MyPostsView, MovieDetailView, FilteredMoviesView
+from .views import PopularMoviesView, SearchMoviesView , MovieView, NotificationListView , MarkNotificationAsReadView  ,MyPostsView, MovieDetailView, FilteredMoviesView ,LikePostView
 from . import views
 
 urlpatterns = [
@@ -11,6 +11,8 @@ urlpatterns = [
 
     # Handles GET (all posts) and POST (create post)
     path('posts/', MovieView.as_view(), name='movie-list-create'),
+
+    path('posts/like/<int:post_id>/', LikePostView.as_view()),
 
     path("posts/me/", MyPostsView.as_view(), name="my-posts"),
     
