@@ -13,6 +13,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
+from django.core.mail import send_mail
+
+
 import traceback
 
 
@@ -308,3 +311,17 @@ def delete_account(request):
         {"message": "Account deleted successfully"},
         status=status.HTTP_200_OK
     )
+
+
+@api_view(['GET'])
+def test_email(request):
+
+    send_mail(
+        subject="Test Email",
+        message="Brevo SMTP is working!",
+        from_email=None,
+        recipient_list=["maahi311204@gmail.com"],
+        fail_silently=False
+    )
+
+    return Response({"message": "Email sent successfully"})
