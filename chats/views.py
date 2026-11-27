@@ -5,12 +5,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
 
 from django.contrib.auth import get_user_model
 
-from .models import ChatRoom
+from .models import ChatRoom, Message
 import traceback
-from .serializers import ChatRoomSerializer
+from .serializers import ChatRoomSerializer, MessageSerializer
 
 from django.db.models import Q
 
@@ -120,3 +121,23 @@ class CreateChatRoomView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+
+class ChatMessagesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, room_id):
+
+        room = get_object_or_404(
+            ChatRoom.objects.filter(
+                Q(user1=request.user) | Q(user2=request.user)
+            ),
+            id=room_id
+        )
+
+        messages = Message.objects.filter(
+            room=room
+        ).order_by("created_at")
+
+        serializer = MessageSerializer(messages, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

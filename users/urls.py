@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import  LoginView, RegisterView , UserDetailsView, health_check, getMyProfileDetails, SurveyCreateAPIView, SubmitSurveyResponsesView
+from .views import  LoginView, RegisterView , UserDetailsView, health_check, getMyProfileDetails, SurveyCreateAPIView, SubmitSurveyResponsesView , delete_account
 
 urlpatterns = [
 
@@ -8,6 +8,8 @@ urlpatterns = [
     path('login/', LoginView.as_view()),
 
     path('create-user/' , UserDetailsView.as_view()),
+
+    path('delete-account/' , delete_account),
 
     path('get-user-details/<int:id>/' , UserDetailsView.as_view()),
 
