@@ -186,3 +186,23 @@ class UserSurveyResponse(models.Model):
         if not self.selected_choice:
             return None
         return getattr(self.question, self.selected_choice, None)
+
+
+class PasswordResetOTP(models.Model):
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="password_reset_otps"
+    )
+
+    otp = models.CharField(max_length=128)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    is_verified = models.BooleanField(default=False)
+
+    attempts = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"Password reset OTP - {self.user.email}"

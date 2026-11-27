@@ -6,14 +6,22 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 import traceback
-from .models  import Survey
+from .models  import Survey, PasswordResetOTP
 from .serializers import LoginSerializer, RegisterSerializer , UserDetailsSerializer, SurveySerializer , UserSurveyResponseSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
+import random
+
+from django.contrib.auth.hashers import make_password
+
 from django.core.mail import send_mail
+
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 import traceback
@@ -314,14 +322,71 @@ def delete_account(request):
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def test_email(request):
+    try:
+        result = send_mail(
+            subject="Test Email",
+            message="Brevo SMTP is working!",
+            from_email=None,
+            recipient_list=["your_email@gmail.com"],
+            fail_silently=False
+        )
 
+        return Response({"result": result})
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+
+        return Response({
+            "error": str(e),
+            "type": type(e).__name__
+        }, status=500)
+
+
+
+@api_view(['POST'])
+def forgot_password(request):
+
+    email = request.data.get('email')
+
+    if not email:
+        return Response(
+            {"error": "Email is required"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response(
+            {"error": "No account found with this email"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # Delete previous OTPs
+    PasswordResetOTP.objects.filter(user=user).delete()
+
+    # Generate 6-digit OTP
+    otp = str(random.randint(100000, 999999))
+
+    # Save hashed OTP
+    PasswordResetOTP.objects.create(
+        user=user,
+        otp=make_password(otp)
+    )
+
+    # Send OTP
     send_mail(
-        subject="Test Email",
-        message="Brevo SMTP is working!",
+        subject="Password Reset OTP",
+        message=f"Your OTP is {otp}. It expires in 5 minutes.",
         from_email=None,
-        recipient_list=["maahi311204@gmail.com"],
+        recipient_list=[user.email],
         fail_silently=False
     )
 
-    return Response({"message": "Email sent successfully"})
+    return Response(
+        {"message": "OTP sent successfully"},
+        status=status.HTTP_200_OK
+    )
